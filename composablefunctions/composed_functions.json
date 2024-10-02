@@ -1,0 +1,20 @@
+[
+    {
+        "func": "multiply_by_two",
+        "args": [],
+        "kwargs": {},
+        "enabled": false
+    },
+    {
+        "func": "add_one",
+        "args": [],
+        "kwargs": {},
+        "enabled": true
+    },
+    {
+        "func": "add_one",
+        "args": [],
+        "kwargs": {},
+        "enabled": true
+    }
+]
