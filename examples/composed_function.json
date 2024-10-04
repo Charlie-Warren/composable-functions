@@ -1,0 +1,36 @@
+[
+    {
+        "func": "multiply_by_two",
+        "args": [],
+        "kwargs": {},
+        "enabled": true
+    },
+    {
+        "func": "add_one_or_two",
+        "args": [
+            false
+        ],
+        "kwargs": {},
+        "enabled": true
+    },
+    {
+        "func": "add_one_or_two",
+        "args": [],
+        "kwargs": {
+            "add_one": true
+        },
+        "enabled": false
+    },
+    {
+        "func": "foo",
+        "args": [
+            2
+        ],
+        "kwargs": {
+            "b": 3,
+            "c": 4.0,
+            "d": 5.0
+        },
+        "enabled": true
+    }
+]
