@@ -1,10 +1,9 @@
 import json
 from dataclasses import dataclass
-from typing import Callable, Any, Union
+from typing import Callable, Any, Union, TypeVar
 
-import numpy as np
-
-ComposableFunction = Callable[[np.ndarray, Any], np.ndarray]
+T = TypeVar("T")
+ComposableFunction = Callable[[T, Any], T]
 
 
 @dataclass
@@ -16,7 +15,7 @@ class Composable:
 
 
 class ComposedFunction:
-    def __init__(self):
+    def __init__(self) -> None:
         self.composables: list[Composable] = []
         self.available_funcs: list[ComposableFunction] = []
 
@@ -24,24 +23,9 @@ class ComposedFunction:
         """
         Add a custom function and its associated arguments.
         
-        The first argument of your function should always be the input numpy array to apply
-        the function to. Other arguments and keyword arguments can be passed to the function
-        after the input array. Your function should return a numpy array.
-
-        Example
-        -------
-        def foo(arr: np.ndarray, a: int, b: float) -> np.ndarray:
-            return arr * a + b
-
-        my_data = np.array([1, 2, 3])
-
-        composed = ComposedFunction()
-
-        composed.add_function(foo, a=2, b=3.5)
-
-        composed.add_function(foo, a=5, b=8.1)
-        
-        composed.apply(my_data)
+        The first argument of your function can be any type as long as it matches
+        the type of the return value. Other arguments and keyword arguments can be
+        passed to the function after the input array.
         """
         self.composables.append(
             Composable(func=func, args=args, kwargs=kwargs, enabled=True)
@@ -103,9 +87,9 @@ class ComposedFunction:
         for i in range(len(self.composables)):
             print(f"{i}: {self.get_function_str(i, show_args=show_args, show_kwargs=show_kwargs)}")
 
-    def apply(self, arr: np.ndarray) -> np.ndarray:
-        """Apply all functions in sequence to the array."""
-        result = arr
+    def apply(self, input: T) -> T:
+        """Apply all functions in sequence to the input."""
+        result = input
         for composable in self.composables:
             func = composable.func
             args = composable.args
@@ -113,8 +97,8 @@ class ComposedFunction:
             if composable.enabled:
                 result = func(result, *args, **kwargs)
         return result
-
-    def save(self, filename: str):
+    
+    def get_json_str(self) -> str:
         data = []
         for comp in self.composables:
             func = comp.func
@@ -128,8 +112,11 @@ class ComposedFunction:
                 'enabled': enabled
             }
             data.append(comp_dict)
+        return json.dumps(data, indent=4)
+
+    def save(self, filename: str) -> None:
         with open(filename, 'w') as f:
-            json.dump(data, f, indent=4)
+            f.write(self.get_json_str())
 
     def _match_func(self, func_name: str) -> Union[ComposableFunction, None]:
         """Return the function from the list of available functions that matches the given name.
@@ -139,7 +126,7 @@ class ComposedFunction:
             return None
         return [func for func in self.available_funcs if func.__name__ == func_name][0]
 
-    def load(self, filename: str):
+    def load(self, filename: str) -> None:
         if not self.available_funcs:
             raise ValueError("No available functions to load. First use set_available_funcs to add valid functions.")
 

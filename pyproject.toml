@@ -1,13 +1,12 @@
 [tool.poetry]
 name = "composablefunctions"
 version = "0.1.0"
-description = ""
+description = "Implementing composable functions."
 authors = ["Charlie-Warren <c_warren1@live.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-numpy = "^2.1.1"
 
 
 [tool.poetry.group.dev.dependencies]
